@@ -69,24 +69,17 @@ public class Solution {
         return helper(root.left, min, (long)root.val-1) && helper(root.right, (long)root.val+1, max);//ALLOW ONLY DISTINCT VALUES
     }
 
-    // from nineChapter, do not understand yet
-    private int lastVal = Integer.MIN_VALUE;
-    private boolean firstNode = true;
-    public boolean isValidBST(TreeNode root) {
-        if (root == null) {
-            return true;
-        }
-        if (!isValidBST(root.left)) {
-            return false;
-        }
-        if (!firstNode && lastVal >= root.val) {
-            return false;
-        }
+    // use in-order traversal, the order should be increasing
+    
+    int prev = Integer.MIN_VALUE;
+    boolean firstNode=true;// deal with overflow, only needed once, for smallest node
+    public boolean isValidBST(TreeNode root){
+        if(root==null) return true;     
+        if(!isValidBST(root.left)) return false;
+        if(!firstNode && root.val <= prev) return false;
+        prev = root.val;
         firstNode = false;
-        lastVal = root.val;
-        if (!isValidBST(root.right)) {
-            return false;
-        }
-        return true;
+        return isValidBST(root.right);
     }
+
 }
