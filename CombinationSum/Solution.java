@@ -86,8 +86,36 @@ public class Solution {
    			
    }
 
-
-
+ // my solution time complexity:O(k^n) where k is the target value, backtracking method
+   // idea dfs, each level target/A[base] possibility, n levels all together
+   public List<List<Integer>> combinationSum2(int[] candidates, int target){
+    List<List<Integer>> result = new ArrayList<List<Integer>>();
+    List<Integer> sub = new ArrayList<Integer>();
+    Arrays.sort(candidates);
+    return helper(candidates, target, 0, sub, result,0);
+  }
+  public List<List<Integer>> helper(int[] A, int target, int base, List<Integer> sub, List<List<Integer>> result, int sum){
+    if(sum==target){
+      // put sub into result
+      List<Integer> temp = new ArrayList<Integer>(sub);
+      result.add(temp);
+      return result;
+    }
+    else if(base == A.length){
+      return result;
+    }
+    for(int i=sum; i<=target;i+=A[base]){
+        for(int k = 0;k<(i-sum)/A[base];k++){
+            sub.add(A[base]);
+        }
+        helper(A, target, base+1,sub,result, i);
+        for(int k = 0;k<(i-sum)/A[base];k++){
+             sub.remove(sub.size()-1);
+        }
+       
+    }
+    return result;
+  }
 
 
 
