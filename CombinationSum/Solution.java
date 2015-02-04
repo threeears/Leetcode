@@ -21,104 +21,59 @@
 
 public class Solution {
 
-	//naive solution, find 1sum, 2sum, 3sum...Tsum
-	// naive2: every possible elements: 2:2,4,6; 3:3,6; 6:6, 7:7
-	// 2, 4, 6(2s),7
-
-
-	public static void main(String[] args){
-		Solution test = new Solution();
-		int[] candidates={2,3,8,1};
-		int target = 7;
-		test.combinationSum(candidates, target);
-	}
-    public List<List<Integer>> combinationSum(int[] candidates, int target) {
-    	List<List<Integer>> result = new ArrayList<List<Integer>>();
-    		List<Integer> list = new ArrayList<Integer>();
-    		Arrays.sort(candidates);// important base!
-    		System.out.println(findTarget(candidates,0,list,result ,0,target));
-    	// start with sum zero
-    	return result;
+	public ArrayList<ArrayList<Integer>> combinationSum(int[] candidates, int target) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+        if (candidates==null || candidates.length==0)
+            return res;
+        Arrays.sort(candidates);
+        dfs(candidates, 0, res, target, new ArrayList<Integer>());
+        return res;
     }
-// similar to DFS
-   public List<List<Integer>> findTarget(int[] array, int base, List<Integer> group,
-		   						List<List<Integer>> result, int sum,int target){
-   			boolean flag = false;
-	   		for(int i = base;i<array.length;i++){
-   				if(sum + array[i]==target){
-   					group.add(array[i]);
-   					sum = sum + array[i];
-   					flag = true;// find one!!
-   				}
-   				else if(sum + array[i]>target){
-   					flag =false;// cannot find , but may find group still in this loop
-   					// cannot return from here!!
-   				}
-   				else{
-   					group.add(array[i]);
-   					sum = sum + array[i];
-   					if(findTarget(array,i,group,result,sum,target)==null)
-   						sum = sum - array[i];// because newly added node does not work at all
-   					else
-   					{// newly added work worked, 2,2,returned, found one, no other are possible
-   						group.remove(group.size()-1);// therefore, try 2,3 next
-   						sum = sum-array[i];
-   						
-   					}
-   				}
-   				if(flag==true){// if found one group, create a new copy, not reference!!
-   					List<Integer> addList = new ArrayList<Integer>();
-   					for(int k = 0;k<group.size();k++)
-   						addList.add(group.get(k));
-   					result.add(addList);
-   					group.remove(group.size()-1);// 2,2,3 works, remove 3, return to 2,2,(2-end)
-   					return result;//if not return, next would be  2,2,4, not necessary
-   				}
-   			}
-	   		if(flag==false)
-			{	if(group.size()==0)
-				return result;// first element is not working, all after is will not work also
-	   			group.remove(group.size()-1);
-	   			sum = sum - array[base];// this line can be removed
-	   		}
-	   		// the only case returns null is after for loop is done, no group has found
-   			return null;
-   			
+    
+    private void dfs(int[] candidates, int dep, ArrayList<ArrayList<Integer>> res, int target, ArrayList<Integer> r){
+        if (target==0){
+            res.add(new ArrayList<Integer>(r));
+            return;
+        }
+        if (dep==candidates.length || target<0)
+            return;
+        for (int i=dep; i<candidates.length; i++){
+            r.add(candidates[i]);
+            dfs(candidates, i, res, target-candidates[i], r);
+            r.remove(r.size()-1);
+        }
+    }
+
+// DP version time complexity O(m*n)
+
+public ArrayList<ArrayList<Integer>> combinationSum2(int[] candidates, int target) {
+      if (candidates == null || candidates.length == 0)
+         return new ArrayList<ArrayList<Integer>>();
+      Arrays.sort(candidates);
+      Map<Integer, ArrayList<ArrayList<Integer>>> dp = new HashMap<Integer, ArrayList<ArrayList<Integer>>>();
+      for (int i=0; i<=target; i++)
+         dp.put(i, new ArrayList<ArrayList<Integer>>());
+      dp.get(0).add(new ArrayList<Integer>());
+      int N = candidates.length;
+      for (int i = 0; i < N; i++) {
+         for (int j = candidates[i]; j <= target; j++) {
+            ArrayList<ArrayList<Integer>> lists = clone(dp.get(j - candidates[i]));
+            for (ArrayList<Integer> list : lists)
+               list.add(candidates[i]);
+            dp.get(j).addAll(lists);
+         }
+      }
+      return dp.get(target);
    }
 
- // my solution time complexity:O(k^n) where k is the target value, backtracking method
-   // idea dfs, each level target/A[base] possibility, n levels all together
-   public List<List<Integer>> combinationSum2(int[] candidates, int target){
-    List<List<Integer>> result = new ArrayList<List<Integer>>();
-    List<Integer> sub = new ArrayList<Integer>();
-    Arrays.sort(candidates);
-    return helper(candidates, target, 0, sub, result,0);
-  }
-  public List<List<Integer>> helper(int[] A, int target, int base, List<Integer> sub, List<List<Integer>> result, int sum){
-    if(sum==target){
-      // put sub into result
-      List<Integer> temp = new ArrayList<Integer>(sub);
-      result.add(temp);
-      return result;
-    }
-    else if(base == A.length){
-      return result;
-    }
-    for(int i=sum; i<=target;i+=A[base]){
-        for(int k = 0;k<(i-sum)/A[base];k++){
-            sub.add(A[base]);
-        }
-        helper(A, target, base+1,sub,result, i);
-        for(int k = 0;k<(i-sum)/A[base];k++){
-             sub.remove(sub.size()-1);
-        }
-       
-    }
-    return result;
-  }
-
-
-
+   private ArrayList<ArrayList<Integer>> clone(ArrayList<ArrayList<Integer>> lists) {
+      ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+      for (ArrayList<Integer> list : lists) {
+         ArrayList<Integer> r = new ArrayList<Integer>(list);
+         res.add(r);
+      }
+      return res;
+   }
 
 
 
