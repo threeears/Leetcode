@@ -7,6 +7,7 @@ Note: You may not slant the container.
 
 public class Solution {
     public int maxArea(int[] height){
+    	// move the smaller pointer
 		int area=0;
 		for(int i=0,j=height.length-1;i<j;i++,j--){
 			if(height[i]<height[j]){
@@ -19,6 +20,41 @@ public class Solution {
 			}
 		}
 		return area;
+	}
+
+// my solution O(n), O(1), but not concise enough
+	public int maxArea(int[] height){
+	    int start = 0;
+	    int end = height.length-1;
+	    int area = Math.min(height[start], height[end])*end;
+	    boolean flag = true;
+	    
+	    while(start<end){
+	        flag = false;
+	        if(height[start]<=height[start+1] && start+1!=end){
+	            start++;
+	            int lowBar = Math.min(height[start], height[end]);
+	            area = Math.max(area, lowBar*(end-start));
+	            flag = true;
+	        }
+
+	        if(end-1!=start && height[end-1]>=height[end]){
+	            end--;
+	            int lowBar = Math.min(height[end],height[start]);
+	            area = Math.max(area, lowBar*(end-start));
+	            flag = true;
+	        }
+	        if(flag==false){
+	        	// key point here, if facing downside, keep the larger one, move the smaller one
+	            int min = height[start]>height[end]?end:start;
+	            if(min==end)
+	                end--;
+	            else
+	                start++;
+	        }
+
+	    }
+	    return area;
 	}
 }
 //O(n),O(1);

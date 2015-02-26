@@ -8,60 +8,56 @@
 */
 public class Solution {
    public String intToRoman(int num) {
-	    	String[] roman = new String[4000];
-	    	String snum = Integer.toString(num);
-	    	int length = snum.length();
-	    	String result="";
-	    	// learning pattern
-	    	roman[0]="";
-	    	roman[1]="I";
-	    	roman[2]="II";
-	    	roman[3]="III";
-	    	roman[4]="IV";
-	    	roman[5]="V";
-	    	roman[6]="VI";
-	    	roman[7]="VII";
-	    	roman[8]="VIII";
-	    	roman[9]="IX";
+	    	StringBuilder res = new StringBuilder();
+	    	String[] table = {"","I","II","III","IV","V","VI","VII","VIII","IX"};
+	    	 
+	    	int count = 1;
+	    	while(num!=0){
+	    	    String res_str = table[num%10];
+	    	    int k = 1;
+	    	    while(k<count){
+	    	        res_str = multiplyTen(res_str);
+	    	        k++;
+	    	    }
+	    	    res.insert(0,res_str);
+	    	    num = num/10;
+	    	    count++;
+	    	}
+	    	return res.toString();
+	    }
+	public String multiplyTen(String str){
+         HashMap<Character, Character> map = new HashMap<Character,Character>();
+             map.put('I', 'X');
+	         map.put('X','C');
+	         map.put('C','M');
+	         map.put('V','L');
+	         map.put('L','D');
 	    	
-	    	while(length>=1){
-	    		if(num % (Math.pow(10,length-1))==0){//remain is zero
-	    			result += timesBase(roman[(int) (num/(Math.pow(10,length-1)))],(length-1));
-	    			break;
-	    		}
-	    		else{// remain is not zero but from 1-9
-	    			int ans= (int) (num/Math.pow(10,length-1));//integer answer after divided
-	    			result+=timesBase(roman[ans],(length-1));
-	    			num=(int) (num%(Math.pow(10,length-1)));//turn to its remain
-	    			length--;
+	    StringBuilder res = new StringBuilder();
+	   
+	    for(int i = 0;i<str.length();i++){
+	        res.append(map.get(str.charAt(i)));
+	    }
+	    return res.toString();
+	}
 
-	    		}
-	    	}
-	    	
-	    return result;
-	        
+	    // from nineChapter, better, more concise solution
+	    public String intToRoman(int num) {
+		if(num <= 0) {
+			return "";
+		}
+	    int[] nums = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+	    String[] symbols = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+	    StringBuilder res = new StringBuilder();
+	    int digit=0;
+	    while (num > 0) {
+	        int times = num / nums[digit];
+	        num -= nums[digit] * times;
+	        for ( ; times > 0; times--) {
+	            res.append(symbols[digit]);
+	        }
+	        digit++;
 	    }
-	    public String timesBase(String input, int base){
-	    	//base:1:10, 2:100, 3:1000
-	    	//input belongs to 1-9 of Roman
-	    	String output="";
-	    	int length = input.length();
-			char[] unit={'I','V','X','L','C','D','M'}; 
-			HashMap<Character, Integer> map = new HashMap<Character,Integer>(); 
-			map.put('I',1);
-			map.put('V',2);
-			map.put('X',3);
-			map.put('L',4);
-			map.put('C',5);
-			map.put('D',6);
-			map.put('M',7);  
-	    	
-	    	for(int i = 0;i<length;i++){
-	    		int outputValue = map.get(input.charAt(i))+2*base;
-	    		output+=unit[outputValue-1];
-	    	}
-	    	
-	    	return output;
-	    }
-	    //time: O(n)? spaceO(1)
+	    return res.toString();
+	}
 }

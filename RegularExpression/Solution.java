@@ -23,34 +23,30 @@ public class Solution {
     public boolean isMatch(String s, String p) {
     boolean[][] dp = new boolean[s.length()+1][p.length()+1];
         dp[0][0] = true;
-        if(p.length()>0) dp[0][1] = false;
-        for(int i = 0;i<p.length();i=i+2){
-        	if(i+1<p.length() && p.charAt(i+1)=='*')
-        		dp[0][i+2]=true;
-        	else break;
+        for(int i = 1;i<p.length();i=i+2){
+            dp[0][i+1]=p.charAt(i)=='*'?true:false;
+            if(dp[0][i+1]==false)
+                break;
         }
-        for(int j = 0;j<p.length();j++)
-             for(int i = 0;i<s.length();i++){
-                 if( p.charAt(j)==s.charAt(i) || p.charAt(j)=='.'){
-                     dp[i+1][j+1] = dp[i][j]==true?true:false;
-                     
-                 }
-                 else if(p.charAt(j)!=s.charAt(i)){
-                     if(p.charAt(j)=='*'){
-                         // match with . and s.charAt(i-1)
-                         if(s.charAt(i)==p.charAt(j-1) || p.charAt(j-1)=='.')
-                         { // critical part
-                        	 boolean temp = dp[i][j] || dp[i+1][j] || dp[i+1][j-1]||dp[i][j+1];
-                        	 dp[i+1][j+1] = temp;
-                         }
-                         else
-                        	 // not match, omit current *
-                        	 dp[i+1][j+1] = dp[i+1][j-1]==true?true:false;
-                     }
-                 }
-             }
-       return dp[s.length()][p.length()];
+        for(int i = 0;i<s.length();i++)
+            for(int j = 0;j<p.length();j++){
+                if(s.charAt(i)==p.charAt(j) || p.charAt(j)=='.'){
+                    dp[i+1][j+1] = dp[i][j];
+                }
+                else if(p.charAt(j)=='*'){
+                    if(p.charAt(j-1)==s.charAt(i) || p.charAt(j-1)=='.' ){
+                        // critical point
+                        dp[i+1][j+1]= dp[i][j]||dp[i+1][j-1]||dp[i][j+1];//match or match as empty
+                    }
+                    else{
+                        dp[i+1][j+1] = dp[i+1][j-1];//match as empty
+                    }
+                }
+            }
+      return dp[s.length()][p.length()];
      }
+
+     
      // recursion, time consuming than mine
         public boolean isMatch2(String s, String p) {
         if (s==null || p==null) return false;

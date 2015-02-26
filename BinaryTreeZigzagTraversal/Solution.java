@@ -105,4 +105,40 @@ public class Solution {
         return result;
 
     }
+    // my second round solution, same as nineChapter's
+         public ArrayList<ArrayList<Integer>> zigzagLevelOrder(TreeNode root) {
+        Stack<TreeNode> A = new Stack<TreeNode>();
+        Stack<TreeNode> B = new Stack<TreeNode>();
+        Stack<TreeNode> parent = A;
+        Stack<TreeNode> children = B;
+        
+        ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+        if(root==null) return res;
+        A.push(root);
+        boolean flag = true;//true is the normal order, from left to right
+        while(!parent.isEmpty()){
+            ArrayList<Integer> list = new ArrayList<Integer>();
+            while(!parent.isEmpty()){
+                // add children to stack B from left to right
+                TreeNode current = parent.pop();
+                list.add(current.val);
+                if(flag==true){
+                    if(current.left!=null) children.push(current.left);
+                    if(current.right!=null) children.push(current.right);
+                }
+                else{
+                    if(current.right!=null) children.push(current.right);
+                    if(current.left!=null) children.push(current.left);
+                }
+                
+             }
+             res.add(list);
+             Stack<TreeNode> temp = parent;
+             parent = children;
+             children = temp;
+             flag = !flag;
+        }
+        
+        return res;
+    }
 }
