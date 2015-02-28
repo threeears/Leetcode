@@ -25,9 +25,8 @@ public class Solution {
         }
         return end+1;
    }
- }
 
-    public int removeDuplicates(int[] A) {
+    public int removeDuplicates2(int[] A) {
     if (A.length == 0) return 0;
     int i = 0;
     for (int j=0; j<A.length; j++) {
@@ -36,4 +35,5 @@ public class Solution {
     }
     return i+1;
     }
-}
+ }
+

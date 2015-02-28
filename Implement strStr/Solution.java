@@ -4,6 +4,7 @@
 
 
 public class Solution {
+    // brute force, O(m*n)
     public int strStr(String haystack, String needle) {
         if(needle.length()==0 ) return 0;
         else{

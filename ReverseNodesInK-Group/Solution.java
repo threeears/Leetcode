@@ -23,59 +23,35 @@
    }
 public class Solution {
     // my solution is a little waste in judging numbers ahead.
-    public ListNode reverseKGroup(ListNode head, int k) {
-        ListNode virtual = new ListNode(0);
-        virtual.next=head;
-        ListNode pointer = virtual;
-        ListNode helper = virtual;
-        
-        int step=0;
-        ListNode trial = pointer;
-        int count = 0;
-        while(trial.next!=null && count<=k){//it's a bit waste to try the numbers, one other solution is 
-        //just try once, and get the inverse number.
-            trial=trial.next;
-            count++;
-        }
-        if(count>=k)
-            step=0;
-        else
-            return virtual.next;
-                        
+     public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode pointer = dummy;
         while(pointer.next!=null){
-            step++;
-            if(step<=k && step>=2){
-                //insert pointer from virtual
-                ListNode next = pointer.next.next;
-                ListNode invert = pointer.next;
-                pointer.next=next;
-                invert.next=helper.next;
-                helper.next=invert;
-                if(step==k)
-                {
-                    helper=pointer;
-                    trial = pointer;
-                    count = 0;
-                    while(trial.next!=null && count<=k){
-                        trial=trial.next;
-                        count++;
-                    }
-                    if(count>=k)
-                    {
-                        step=0;
-                        continue;//do not need to go one step further
-                    }
-                    else
-                        break;
+            //1. check need to reverse of not
+            if(checkReverse(pointer, k)==true){
+                ListNode start = pointer.next;
+                //reverse the next k element
+                for(int i = 0;i<k-1;i++){
+                    ListNode toSwap = start.next;
+                    start.next = toSwap.next;
+                    toSwap.next = pointer.next;
+                    pointer.next = toSwap;
                 }
-                else{
-                    continue;
-                }
-                
+                pointer = start;
             }
-            pointer=pointer.next;//go one step further
+            else
+                break;
         }
-        return virtual.next;
+        return dummy.next;
+    }
+    boolean checkReverse(ListNode root, int k){
+        ListNode faster= root;
+        while( faster.next!=null && k>0){
+            faster = faster.next;
+            k--;
+        }
+        return k==0;
     }
 
 //from nineChapter

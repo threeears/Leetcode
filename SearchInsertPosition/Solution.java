@@ -10,36 +10,43 @@
 // [1,3,5,6], 0 → 0
 
 public class Solution {
-	public static void main(String[] agrs){
-		int[] A={1,3};
-		Solution test = new Solution();
-		System.out.println(test.searchInsert(A,4));
-	}
+	//TaoGe more concised
+    // binary search
+// The key observation is that: the last step in while loop is start==end==mid, 
+// if A[mid]>target, mid is insertion position; if A[mid]<target, mid+1 is insertion position.
+// time: O(lgn)
     public int searchInsert(int[] A, int target) {
-
-    	// find the right position of given value in a sorted array
-    	// binary search to find a position
-    	return binarySearch(0,A.length-1,A, target);    	
-        
-    }
-    public int binarySearch(int start, int end, int[] A, int target){
-
-    	int result = -1;
-    	if(start>=end && A[start]!=target){// only two elemets, start == mid, then mid-1 would overflow
-    		result = A[start]<target?start+1:start;
-    		return result;// at the end of search, stop here!!
-    	}
-    	int mid = start + (end-start)/2;
-    	if(A[mid]==target)// apply to 1, 2...as long as target is in the array
-    		result = mid;
-    	else if(A[mid]<target){
-    		// target is on the right of mid
-    		result = binarySearch(mid+1, end, A, target);
-    	}
-    	else
-    		result = binarySearch(start, mid-1, A,target);
-
-    	return result;
+        if (A==null || A.length==0) return 0;
+        int start=0, end=A.length-1;
+        while (start <= end){
+            int mid = start + ((end-start)>>1);
+            if (A[mid] == target)   return mid;
+            else if (A[mid] > target)   end=mid-1;
+            else    start=mid+1;
+        }
+        return start;   // equals 'return end+1;'
     }
 
+// my solution second time.
+    public int searchInsert(int[] A, int target) {
+    // binary search log(n)
+    if(A.length==0 || A==null) return -1;
+    return binarySearch(A, target, 0, A.length-1);
+    }
+    private int binarySearch(int[] A, int target, int start, int end){
+        if(start==end){
+            if (A[start]==target)
+                return start;
+            else return A[start]>target?start:start+1;
+        }
+        if(start<end){
+            int mid = start+(end-start)/2;
+            if(A[mid]==target) return mid;
+            else{
+                if(target>A[mid]) return binarySearch(A, target, mid+1, end);
+                if(target<A[mid]) return binarySearch(A, target, start, end-1);
+            }
+        }
+        return -1;
+    }
 }

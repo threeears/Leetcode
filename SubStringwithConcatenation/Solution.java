@@ -120,4 +120,61 @@ public class Solution {
     }  
     return res;  
 }
+// my second round solution, still brute force Time O(m*N), 没有吸取到精华：如果匹配过了就可以下一轮里面跳过第一个word
+// didnot make use of sliding window!!
+ public ArrayList<Integer> findSubstring(String S, String[] L) { 
+        int patternLen = L[0].length()*L.length;
+        int wordLen = L[0].length();
+        ArrayList<Integer> res = new ArrayList<Integer>();
+        HashMap<String,Integer> map = new HashMap<String, Integer>();
+       
+       for(int i = 0;i<L.length;i++){
+           if(map.containsKey(L[i])){
+               int count = map.get(L[i]);
+               map.put(L[i],++count);// notice order of ++, operation order is from left to right
+           }
+           else{
+               map.put(L[i],1);
+           }
+       }
+       
+        if(L.length==0 || S.length()==0) return res;
+        
+        for(int i = 0;i<wordLen;i++){
+            int j=i;
+            while(j+patternLen<=S.length()){//critical
+                if(isMatch(S.substring(j,j+patternLen),L,map)==true){
+                    res.add(j);
+
+                    j = j + wordLen;
+                }
+                else{
+                    j = j + wordLen;
+                }
+            }
+        }
+        return res;
+    } 
+   private boolean isMatch(String str, String[] L,HashMap<String, Integer> map){
+        HashMap<String,Integer> match = new HashMap<String, Integer>();
+        int wordLen = L[0].length();
+       for(int i = 0;i+wordLen<=str.length();i += wordLen){
+           String currentWord = str.substring(i, i+wordLen);
+           if(!map.containsKey(currentWord)){
+               return false;
+           }
+           else{
+              if(match.containsKey(currentWord)){
+                    int times = match.get(currentWord);
+                    match.put(currentWord, times+1);
+                   if(match.get(currentWord)>map.get(currentWord))
+                        return false;
+              }
+              else{
+                  match.put(currentWord, 1);
+              }
+           }
+       }
+       return true;
+   }
 }

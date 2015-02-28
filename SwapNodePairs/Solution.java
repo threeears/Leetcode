@@ -18,41 +18,8 @@
  }
  
 public class Solution {
-	public static void main(Stirng[] args){
-		Solution test = new Solution();
-		ListNode one = new ListNode(1);
-		ListNode two = new ListNode(2);
-		ListNode three = new ListNode(3);
-		ListNode four = new ListNode(4);
 
-		one.next = two;
-		two.next = three;
-		three.next = four;
-
-		test.swapPairs(ListNode head);
-			
-		}
-	}
-	//solution one, recurrsive takes space O(n)
-    public ListNode swapPairs(ListNode head) {
-    	// swap 1 and 2:
-    	//1.next=2.next
-    	//2->next = 1
-    	if(head==null || head.next==null) return head;
-
-    	ListNode pointer1;
-    	pointer1 = head;
-    	ListNode pointerNext = head.next;
-    	swap(pointer1, pointerNext);
-    	if(pointer1.next!=null)
-    		swapPairs(pointer1.next);
-    	return pointerNext;
-        
-    }
-    public void swap(ListNode pointer1, Listnode pointer2){
-    	pointer1.next = pointer2.next;
-    	pointer2.next = pointer1;
-    }
+    
     //solution two, use constant space
     // the pointer can be tricky, remember that pointer points to the address of the objects, they are
     // not the address themself, once the pointer change the object it points to, the previous objects 
@@ -75,5 +42,39 @@ public class Solution {
         }
         return head.next;
     }
-}
+    // my solution , recurrsion cost O(1) space
+   public ListNode swapPairs(ListNode head) {
+      ListNode dummy = new ListNode(-1);
+      dummy.next = head;
+      ListNode pointer = dummy;
+      return helper(dummy, pointer).next;
+    }
+    public ListNode helper(ListNode root, ListNode pointer){
+        if(pointer!=null && pointer.next!=null && pointer.next.next!=null){
+            ListNode toSwap = pointer.next.next;
+            pointer.next.next = toSwap.next;
+            toSwap.next = pointer.next;
+            pointer.next = toSwap;
+            pointer = pointer.next.next;
+            helper(root,pointer);
+        }
+        return root;
+    }
+// Tao Ge Iterative one
+    public ListNode swapPairs(ListNode head) {
+        if (head==null || head.next==null)
+            return head;
+        ListNode dum = new ListNode(0);
+        dum.next = head;
+        ListNode p = head, prev = dum;
+        while (p!=null && p.next!=null){
+            ListNode first = p, second = p.next, next = second.next;
+            prev.next =second;
+            second.next = first;
+            first.next = next;
+            prev = first;
+            p = next;
+        }
+        return dum.next;
+    }
 }

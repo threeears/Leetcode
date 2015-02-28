@@ -10,49 +10,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Solution {
-	public static void main(String[] args){
-		Solution test = new Solution();
-		
-		System.out.println(test.generateParenthesis(3));
-	}
-    public List<String> generateParenthesis(int n) {
-        //left number >= right number
-        int left = n;
-        int right = n;
-        List<Character> subList = new ArrayList<Character>();
-        List<String> result = new ArrayList<String>();
-        subList.add('(');
-        left--;
-        helper(n,left, right, result, subList);
-        return result;
+    // Tao Ge
+    // Recursion
+// Maintain two variables to track the number of left and right parenthesis so far
+// prune the invalid string if r>l || r<0 || l<0
+// time: O(2^(2n)); 
+    pub ArrayList<String> res = new ArrayList<String>();
+        if (n == 0)
+            return res;
+        finder(n, n, res, new String());
+        return res;
     }
-    public boolean helper(int n, int left, int right, List<String> result, List<Character> sub){
-        if(sub.size()==2*n){
-            //one string is done
-            StringBuilder ans = new StringBuilder();
-            for(int i = 0;i<sub.size();i++){
-                ans.append(sub.get(i));
+    
+    public void finder(int l, int r, ArrayList<String> res, String s){
+        if (l <0 || r <0 || r > l)  // r>l is also invalid
+            return; 
+        if (l == 0 && r == 0){
+            res.add(s);
+            return;
+        }
+        finder(l-1, r, n, res, s+"(");
+        finder(l, r-1, n, res, s+")");
+    }
+    //my solution, To Ge's better than mine
+     public List<String> generateParenthesis(int n) {
+       return helper(n,n,new ArrayList<String>(), new StringBuilder());
+    }
+    public List<String>helper(int left, int right, List<String> res, StringBuilder str){
+        if(left==0 && right==0){
+            res.add(str.toString());
+        }
+        if(left<=right){
+            if(left>0)
+            //add left bracket
+            {
+                str.append('(');
+                left--;
+                helper(left, right, res, str);
+                left++;
+                str.deleteCharAt(str.length()-1);
             }
-            result.add(ans.toString());
-            return true;
         }
-        //if left<right, can put left or right
-        if(left<=right && left > 0){
-            sub.add('(');
-            left--;
-            helper(n,left, right, result, sub);
-            left++;
-            sub.remove(sub.size()-1);
+        if(left<right){
+            if(right>0)
+            {
+                str.append(')');
+                right--;
+                helper(left, right, res, str);
+                right++;
+                str.deleteCharAt(str.length()-1);
+            }
         }
-        if(left<right && right >0)
-        {
-            sub.add(')');
-            right--;
-            helper(n,left, right, result, sub);
-            right++;
-            sub.remove(sub.size()-1);
-        }
-        //if left==right, can only put left in
-        return false;
+        
+      return res;
     }
 }

@@ -9,29 +9,26 @@
 public class Solution {
     public int threeSumClosest(int[] num, int target) {
 
-    	Arrays.sort(num);
-    	int closestSum = num.length()-1;// maximize the difference
-
-
-    	for(int i = 0;i<num.length;i++){
-    		int negative = -target + num[i];
-    		for(int j = i;j<num.length.j++){
-
-    			ArrayList<Integer> sub = new ArrayList<Integer>();
-    			if(sub.contains(num[j]))
-    				return target; //exact match
-    			else{
-    				sub.add(negative-num[j]);// near closest pair: num[i], num[j], target-num[i]-num[j]
-	    			for(int k=j+1;k<num.length();k++){
-	    				int diff = num[k]-sub.get(sub.length()-1);
-	    				closestSum = diff<closestSum?diff:closestSum;
-	    			}	
-    			}
-    			//array sub is sorted decreasingly
-
-    		}
-    	}
-
-        return closestSum;
+    	public int threeSumClosest(int[] num, int target) {
+        if (num == null || num.length <= 2)
+            return 0;
+        Arrays.sort(num); // Sort to avoid duplicates and keep ascending order
+        
+        int gap = num[0]+num[1]+num[2];
+        for (int i = 0; i < num.length-2; i++){
+            int first = num[i];
+            int j = i+1, k = num.length-1;
+            while (j < k){
+                int sum = first + num[j] + num[k];
+                if (sum == target){
+                    return target;
+                }
+                else if (sum > target)  k--;
+                else j++;
+                gap = Math.abs(gap-target)<Math.abs(sum-target)?gap:sum;
+            }
+        }
+        return gap;
     }
+    // O(n^2), O(1)
 }

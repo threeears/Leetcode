@@ -20,25 +20,24 @@
  *     }
  * }
  */
+
 public class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode end = head;
-        ListNode remove = new ListNode(0);
-        remove.next=head;
-        ListNode result = remove;
-
-        int i=1;
-        while(i<n){
-            end = end.next;
-            i++;// do not forget!!
-        }
-        
-        while(end.next!=null){
-            end=end.next;
-            remove = remove.next;
-        }
-        ListNode temp = remove.next.next;
-        remove.next = temp;
-        return result.next;
+        ListNode faster = head;
+    ListNode slower = head;
+    while (n > 0 && faster != null) {
+        faster = faster.next;
+        n--;
     }
+    // Check if has only node
+    if (faster == null) return head.next; 
+
+    while (faster.next != null) {
+        faster = faster.next;
+        slower = slower.next;
+    }
+    // Remove slower.next which is the nth form the end
+    slower.next = slower.next.next;
+    return head;
+}
 }

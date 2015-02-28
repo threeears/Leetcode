@@ -8,61 +8,55 @@
 import java.util.Stack;
 
 public class Solution {
-    public static void main(String[] args){
-        Solution test = new Solution();
-        System.out.println(test.longestValidParentheses2("()))()(())(())))()(()(())()((()()()))))()))((((()())()(())()))((())))((())())())((())()())(((((())(()((()))()()()))()()())())((()()(("));
-        System.out.println(test.longestValidParentheses("()))()(())(())))()(()(())()((()()()))))()))((((()())()(())()))((())))((())())())((())()())(((((())(()((()))()()()))()()())())((()()(("));
-
-    }
-    //my solution O(n3) naive solution
-    public int longestValidParentheses(String s) {
-      if(s.length()<=1) return 0;
-      int[]  dp = new int[s.length()];
-      dp[0]=0;
-      for(int i = 1;i<s.length();i++){
-          for(int j=0;j<=i;j++){
-              String sub = s.substring(j,i+1);
-              if(isValid(sub)==true){
-                 //dp[i]=dp[j-1]+i-j+1 when dp[j-1]!=dp[j-2], j-1是否是一个合理序列的结尾
-                  if(j>=2 && dp[j-1]!=dp[j-2]){
-                      dp[i]=Math.max(dp[j-1]+i-j+1, dp[i]);
-                  }
+   // my secondRound solution, O(n), space O(n) with stack, union-find like solution
+     public int longestValidParentheses(String s) {
+         if(s.length()<2) return 0;
+         int[] match = new int[s.length()];
+         Stack<Integer> st  = new Stack<Integer>();//store the index of the current bracket
+         for(int i = 0;i<s.length();i++){
+             if(s.charAt(i)=='('){
+                 st.push(i);//put in the index of the left bracket
+             }
+             else{
+                 if(st.isEmpty())
+                      continue;
                   else{
-                      // if not a valid ending, then restart the calculation
-                      dp[i] = Math.max(dp[i],i-j+1);
+                      int j = i;
+                      int currStart=0;
+                      int currEnd=0;
+                      while(j<s.length() && s.charAt(j)==')' && st.isEmpty()==false){// find the largest nest
+                          currStart = st.pop();
+                          currEnd = j;
+                          j++;
+                      }
+                      if(i!=j) i = j-1;
+                      match[currStart]=currEnd;
+                  }
+             }
+         }
+        int maxLen = 0;
+        for(int i = 0;i<match.length;i++){      
+           // System.out.println(match[i]);
+            int k = i;
+            if(k<match.length && match[k]!=0){
+              while(k<match.length)
+              {
+                if(match[k]+1<match.length && match[match[k]+1]!=0)
+                {match[i] = match[match[k]+1];
+                maxLen = Math.max(maxLen, match[i]-i+1);
+                k = match[k]+1;
+                }
+                else{
+                  match[i]=match[k];
+                  maxLen = Math.max(maxLen, match[i]-i+1);
+                  break;
                   }
               }
-              else{
-                  if(j>=1)
-                      dp[i]=Math.max(dp[j-1],dp[i]);
-                  else
-                      dp[i]=Math.max(0,dp[i]);
-              }
-          }
-      }
-      return dp[s.length()-1];
-    }
-    public boolean isValid(String s) {
-        Stack<Character> stack = new Stack<Character>();
-        for (Character c : s.toCharArray()) {
-            if (c=='(') {
-                stack.push(c);
-            } else {
-                if (!stack.isEmpty() && is_valid(stack.peek(), c)) {
-                    stack.pop();
-                } else {
-                    return false;
-                }
+              i=k;
             }
-        }
-        return stack.isEmpty();
-    }
-
-    private boolean is_valid(char c1, char c2) {
-        return (c1 == '(' && c2 == ')') || (c1 == '{' && c2 == '}')
-                || (c1 == '[' && c2 == ']');
-    }
-
+        }          
+         return maxLen;
+      }
 
 
     //ideal solution O(n)
