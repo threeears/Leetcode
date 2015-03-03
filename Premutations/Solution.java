@@ -5,7 +5,15 @@
 
 public class Solution {
 
-	// not solved my me, shame!! permutation, combination, DFS!!! simple!!
+  // Note: no duplicates
+
+// A permutation is an ordered combination, order does matter in permutation.
+// e.g. [1,1,2] and [1,2,1] is different
+// while order does not matter in combination
+// e.g. [1,1,2] and [1,2,1] are the same
+
+// DFS
+// From the definition of permutation, in each position, we can have all the different values
     public List<List<Integer>> permute(int[] num) {
        List<List<Integer>> result = new ArrayList<List<Integer>>();
 

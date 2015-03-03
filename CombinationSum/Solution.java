@@ -74,8 +74,34 @@ public ArrayList<ArrayList<Integer>> combinationSum2(int[] candidates, int targe
       }
       return res;
    }
-
-
+// my second round version 2
+public ArrayList<ArrayList<Integer>> combinationSum(int[] candidates, int target) {
+      ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+      if(candidates.length==0) return res;
+      res.addAll(helper(candidates, target,new HashSet<ArrayList<Integer>>(), new ArrayList<Integer>())); 
+      return res;
+   }
+   private HashSet<ArrayList<Integer>>  helper(int[] candidates, int target,
+                            HashSet<ArrayList<Integer>> res, ArrayList<Integer> subres){
+      
+       if(target==0)
+       {
+           ArrayList<Integer> sub = new  ArrayList<Integer>(subres);
+           Collections.sort(sub);
+           res.add(sub );
+           return res;
+       }
+       else if(target<0){
+           return res;
+       }
+       
+       for(int i = 0;i<candidates.length;i++){
+           subres.add(candidates[i]);
+           helper(candidates, target-candidates[i],res,subres);
+           subres.remove(subres.size()-1);
+       }
+       return res;
+   }
 
 
 }

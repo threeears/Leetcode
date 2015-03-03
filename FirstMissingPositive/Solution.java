@@ -7,14 +7,6 @@
 // Your algorithm should run in O(n) time and uses constant space.
 
 public class Solution {
-	public static void main(String[] args){
-		Solution test = new Solution();
-		int[] A = {-1,4,2,4,9,1};
-		test.firstMissingPositive(A);
-		for(int i = 0;i<A.length;i++){
-			System.out.println(A[i]);
-		}
-	}
     public int firstMissingPositive(int[] A) {
         if(A.length==0) return 1;
         
@@ -40,6 +32,33 @@ public class Solution {
         }
         return A.length+1;// all elements in the group are sorted, it must be the after group
     }
+    // my second round solution with counting sort idea, space O(n), time O(n)
+    public int firstMissingPositive(int[] A) {
+        int[] count = new int[A.length+1];
+        if(A.length==0) return 1;
+        for(int i = 0;i<A.length;i++){
+            if(A[i]<count.length && A[i]>=0)// notice the A[i]>0
+                count[A[i]]=A[i];
+        }
+        int i=0;
+        for(i = 1;i<count.length;i++){
+            if(count[i]!=i)
+                return i;
+        }
+        return count.length;
+    }
+    // TaoGe's bitwise solution, BetSet is an array of Bits, space more space than mine,
+    public int firstMissingPositive(int[] A){
+        int length = A.length >> 3 +1;// divid by 8...why? turn a byte into what??
+        BitSet s = new BitSet(length);
+        for(int a: A){
+            if(a > 0 && a<= length )
+                s.set(a);
+        }
+        return s.nextClearBit(1);
+        // nextClearBit(int fromIndex)
+//Returns the index of the first bit that is set to false that occurs on or after the specified starting index.
+}
 }
 
 

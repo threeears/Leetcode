@@ -23,32 +23,19 @@
  */
 public class Solution {
 	// please fully understand the problem before coding
-    public boolean isBalanced(TreeNode root) {
-        if(root==null) return true;
-        if(root.left==null && root.right==null) return true;
-        if(helperHeight(root)==-1)
-            return false;
-        else
-            return true;
+    // idea, maintain the height and balance at the same time, firstly maintain height, once found not balance, return 
+    // unbalanced forever
+   public boolean isBalanced(TreeNode root) {
+        if (root==null) return true;
+        return getHeight(root) > -1;
     }
-    public int helperHeight(TreeNode root){
-    	// please note: to judge balance and height simultaneously, subleft and subright may both 
-    	//balanced but not balance to their root
-        if(root.left==null && root.right==null) return 1;
-        int heigt_left=0;
-        int heigt_right=0;
-        if(root.left!=null){
-            heigt_left = helperHeight(root.left);  
-            if(heigt_left==-1)
-                return -1;
-         }
-        if(root.right!=null){
-            heigt_right = helperHeight(root.right);  
-            if(heigt_right==-1)
-                return -1;
-        }
-        if(Math.abs(heigt_left-heigt_right)<=1)
-            return Math.max(heigt_left, heigt_right)+1;
-        else return -1 ;
+    public int getHeight(TreeNode node){
+       if(node==null) return 0;
+       int leftHeight = getHeight(node.left);
+       if(leftHeight==-1) return -1;//optimized here, skip check right child
+       int rightHeight = getHeight(node.right);
+       if( rightHeight==-1) return -1;
+       if(Math.abs(leftHeight-rightHeight)>1) return -1;
+       return Math.max(leftHeight,rightHeight)+1;
     }
 }

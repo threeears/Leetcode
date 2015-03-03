@@ -12,14 +12,6 @@
 
 public class Solution {
 
-	public static void main(String[] args){
-		Solution test = new Solution();
-		int[] A={-2,1,8,7,-6,4,9,-9,-5,0,5,-2,5,9,7};
-		System.out.println(test.maxSubArray(A));
-		System.out.println(test.maxSubArray2(A));
-
-	}
-
 // O(n) DP
 
     public int maxSubArray2(int[] A) {
@@ -44,6 +36,17 @@ public class Solution {
 		}
 
 		return maxSum;
+    }
+    // more concised solution with space O(1), from wikipedia 
+    public int maxSubArray(int[] A) {
+        if (A==null || A.length==0) return 0;
+        int max = Integer.MIN_VALUE, sum = 0;
+        for (int i=0; i<A.length; i++){
+            // if sum+A[i] < A[i], we start a new subarray
+            sum = Math.max(A[i], sum+A[i]); 
+            max = Math.max(sum, max);
+        }
+        return max;
     }
 
 // Divide and Conqure
@@ -137,25 +140,25 @@ public int FindmaxSubArray(int[] A, int left, int right) {
     }
     // simple version of divide and conqure O(nlgn) Good Algorithm for check maximun continuous sum!!!
     // Brilliant!!
-// public int maxSubArray(int[] A) {
-//         if (A==null || A.length==0) return 0;
-//         return finder(A, 0, A.length-1);
-//     }
+public int maxSubArray(int[] A) {
+        if (A==null || A.length==0) return 0;
+        return finder(A, 0, A.length-1);
+    }
     
-//     public int finder(int[] A, int start, int end){
-//         if (start > end)    return Integer.MIN_VALUE;
-//         int mid = start + ((end - start)>>1);           // notice here, cannot omit the out-nested brackets
-//         int left=Integer.MIN_VALUE, right=Integer.MIN_VALUE, sum=0;
-//         for (int i=mid+1; i<=end; i++){
-//             sum += A[i];
-//             right = Math.max(sum,right);
-//         }
-//         sum = 0;
-//         for (int i=mid-1; i>=start; i--){
-//             sum += A[i];
-//             left = Math.max(sum, left);
-//         }
-//         int mmax = A[mid] + Math.max(left, 0) + Math.max(right, 0);
-//         return Math.max(mmax, Math.max(finder(A, start, mid-1), finder(A, mid+1, end)));
-//     }
+    public int finder(int[] A, int start, int end){
+        if (start > end)    return Integer.MIN_VALUE;
+        int mid = start + ((end - start)>>1);           // notice here, cannot omit the out-nested brackets
+        int left=Integer.MIN_VALUE, right=Integer.MIN_VALUE, sum=0;
+        for (int i=mid+1; i<=end; i++){
+            sum += A[i];
+            right = Math.max(sum,right);
+        }
+        sum = 0;
+        for (int i=mid-1; i>=start; i--){
+            sum += A[i];
+            left = Math.max(sum, left);
+        }
+        int mmax = A[mid] + Math.max(left, 0) + Math.max(right, 0);
+        return Math.max(mmax, Math.max(finder(A, start, mid-1), finder(A, mid+1, end)));
+    }
 }

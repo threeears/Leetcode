@@ -61,7 +61,7 @@ public class Solution {
     	}
     	return -1;
     }
-    public boolean isBlock(int level, int[] currentPlacement){
+    public boolean isBlock(int level, int[] currentPlacement){// O(n)
     	//level is from 0 to n-1
     	for(int i = 0; i<level;i++){
     		// two constrains to check, one constrain(horizontally) has already ensured.
@@ -74,4 +74,31 @@ public class Solution {
     	}
     	return false;//not a block
     }
+
+    //bit check validation  suduko check similar
+    public ArrayList<String[]> solveNQueens(int n){
+        ArrayList<String[]> res = new ArrayList<String[]>();
+        finder( 0, 0, 0, 0, new long[n], res);
+        return res;
+   }
+   
+   public void finder(int x, long col, long lDiagonal, long rDiagonal, long[] rows, ArrayList<String[]> res){
+        if (x == rows.length){
+            String[] r = new String[rows.length];
+            for (int i=0; i<rows.length; i++){
+                r[i] = Long.toBinaryString(rows[i]).replace('0', '.').replace('1', 'Q');
+                while (r[i].length() < rows.length) r[i] = '.' + r[i];  // add '.' to fill the missing 0s
+            }
+            res.add(r);
+        }
+        else{
+            long avail = ~(col | lDiagonal | rDiagonal);
+            for (int i=0; i<rows.length; i++){
+                long pos = avail & (1<<i);
+                if (pos > 0){
+                    rows[x] = pos;
+                    finder(x+1, (col | pos), ((lDiagonal | pos) << 1), ((rDiagonal | pos) >> 1), rows, res);
+                }
+            }
+        }
 }

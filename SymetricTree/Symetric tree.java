@@ -38,19 +38,18 @@
 
 //recursion 
 public class Solution {
-    public boolean isSymmetric(TreeNode root) {
-    	if(root==null) return true;
-    	return symTree(root->left, root->right);
-    }
-	public boolean symTree(TreeNode l, TreeNode r){
-		if(l==null && r==null)
-			return true;
-		bool res=false;
-
-		if(l!=null && r!=null && l->val==r->val)
-		{
-			res=symTree(l->left,r->right) && symTree(l->right, r->left);
-		}
+	// second round recursive one
+     public boolean isSymmetric(TreeNode root){
+		if(root==null) return true;
+        return helper(root.left, root.right);
+	}
+	private boolean helper(TreeNode p, TreeNode q){
+	    if(q==null && p==null) return true;
+        if(p!=null && q!=null && p.val==q.val)
+        {
+            return helper(p.left,q.right) && helper(p.right, q.left);
+        }
+        return false;
 	}
 }
 
@@ -97,6 +96,26 @@ public class Solution{
 		}	
 		return true;
 	}
+
+	// AnnieKim, better iteration, more elegant, but has duplicate comparisons (in fact, only need to compare the half of one level)
+// time: O(n); space: O(b^(d-1)), b is branching factor, d is the maximum depth of the tree
+    public boolean isSymmetric(TreeNode root) {
+        if (root==null) return true;
+        Queue<TreeNode> qu = new LinkedList<TreeNode>();
+        qu.add(root.left);
+        qu.add(root.right);
+        while (!qu.isEmpty()){      // compare one pair each time
+            TreeNode t1 = qu.poll();
+            TreeNode t2 = qu.poll();
+            if (t1==null && t2==null)  continue;
+            if (t1==null || t2==null || t1.val != t2.val)   return false;
+            qu.add(t1.left);
+            qu.add(t2.right);
+            qu.add(t1.right);
+            qu.add(t2.left);
+        }
+        return true;
+    
 }
 
 

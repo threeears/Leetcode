@@ -16,42 +16,7 @@
  * }
  */
 public class Solution {
-  public boolean isValidBST(TreeNode root) {
-    // correct but not efficient
-        if(root==null) return true;     
-        boolean checkLeft = false;
-        boolean checkRight = false;
-        if(root.left!=null && findMax(root.left)<root.val && isValidBST(root.left) || root.left==null){
-            checkLeft = true;
-        }
-        if(root.right!=null && findMin(root.right)>root.val && isValidBST(root.right) || root.right==null){
-            checkRight = true;
-        }
-        
-        return checkLeft & checkRight;
-
-    }
-    public int findMin(TreeNode root){
-        if(root!=null){
-            int result = root.val;
-            int min1 = findMin(root.left);
-            int min2 = findMin(root.right); 
-            min1=Math.min(min1,min2);
-            return Math.min(min1,result);
-        }
-        else return Integer.MAX_VALUE;
-    }
-    public int findMax(TreeNode root){
-        if(root!=null){
-           int result = root.val;
-            int max1 = findMax(root.left);
-            int max2 = findMax(root.right);
-            max1 = Math.max(max1,max2);
-            return Math.max(max1,result);
-        }
-        else return Integer.MIN_VALUE;
-    }
-
+ 
     //more efficient one
     // for left tree, we only care if all the  nodes are smaller than certain value
     // for right tree, we  onlu care if all the nodes are larger than certain value
@@ -72,7 +37,7 @@ public class Solution {
     // use in-order traversal, the order should be increasing
     
     int prev = Integer.MIN_VALUE;
-    boolean firstNode=true;// deal with overflow, only needed once, for smallest node
+    boolean firstNode=true;// deal with overflow, only needed once, for smallest node， which is also the first one
     public boolean isValidBST(TreeNode root){
         if(root==null) return true;     
         if(!isValidBST(root.left)) return false;

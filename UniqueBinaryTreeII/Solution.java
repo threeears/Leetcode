@@ -21,32 +21,70 @@
  * }
  */
 public class Solution {
-    public ArrayList<TreeNode> generateTrees(int n) {
-        return generate(1, n);
+    // my second round solution , recursion, each time add bst(1,k), bst(k+1,n) as left and right children
+     public ArrayList<TreeNode> generateTrees(int n) {
+      ArrayList<TreeNode> res =new ArrayList<TreeNode>();
+      if(n<=0){
+          res.add(null);// this is weird, how do I know why return this?
+          return res;
+      } 
+      return generateTrees(1,n);
     }
-    
-    private ArrayList<TreeNode> generate(int start, int end){
-        ArrayList<TreeNode> rst = new ArrayList<TreeNode>();   
-    
-        if(start > end){
-            rst.add(null);
-            return rst;
+    private ArrayList<TreeNode> generateTrees(int start, int end){
+        ArrayList<TreeNode> res =new ArrayList<TreeNode>();
+        if(start>end) {res.add(null); return res;}//at least one element appears
+        if(start==end){
+            TreeNode single = new TreeNode(start);
+            res.add(single);
+            return res;
         }
-     
-            for(int i=start; i<=end; i++){
-                ArrayList<TreeNode> left = generate(start, i-1);
-                ArrayList<TreeNode> right = generate(i+1, end);
-                for(TreeNode l: left){
-                    for(TreeNode r: right){
-// should new a root here because it need to 
-// be different for each tree
-                        TreeNode root = new TreeNode(i);  
-                        root.left = l;
-                        root.right = r;
-                        rst.add(root);
+        for(int i = start; i<=end;i++){
+            ArrayList<TreeNode> leftChildren = generateTrees(start,i-1);
+            ArrayList<TreeNode> rightChildren = generateTrees(i+1, end);
+            // N left, M k altogether M*N groups of solution
+            for(int j = 0;j<leftChildren.size();j++){
+                for(int k = 0;k<rightChildren.size();k++){
+                    TreeNode root = new TreeNode(i);
+                    root.left = leftChildren.get(j);
+                    root.right = rightChildren.get(k);
+                    res.add(root);
+                }
+            }
+        }
+        return res;
+    }
+
+    // dp from TaoGee, not explored
+    // Dynamic Programming
+// Maintain a table, dp[i] stores the trees build from array [1..i]
+// Each time, for the left subtree, we can use dp[i-1] directly, yet for the right subtree, we need to build
+// trees from the array[i+1,j], which is actually array[1...i-j]+ j
+    public ArrayList<TreeNode> generateTrees(int n) {
+        Map<Integer, ArrayList<TreeNode>> dp = new HashMap<Integer, ArrayList<TreeNode>>();
+        dp.put(0, new ArrayList<TreeNode>()); dp.get(0).add(null);
+        if (n<=0)   return dp.get(0);
+        dp.put(1, new ArrayList<TreeNode>()); dp.get(1).add(new TreeNode(1));
+        for (int i=2; i<=n; i++){
+            dp.put(i, new ArrayList<TreeNode>());
+            for (int j=1; j<=i; j++){
+                for (TreeNode left : dp.get(j-1)){
+                    for (TreeNode right : dp.get(i-j)){
+                        TreeNode root = new TreeNode(j);
+                        root.left = left;
+                        root.right = genNode(right, j);     // if right subtree, need to add increment to ndoe val
+                        dp.get(i).add(root);
                     }
                 }
             }
-        return rst;
+        }
+        return dp.get(n);
     }
+    // generate right subtree nodes using DFS
+    public TreeNode genNode(TreeNode n, int inc){
+        if (n==null)    return null;
+        TreeNode res = new TreeNode(n.val+inc);
+        res.left = genNode(n.left, inc);
+        res.right = genNode(n.right, inc);
+        return res;
+    }   
 }

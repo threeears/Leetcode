@@ -13,21 +13,13 @@
  * }
  */
 public class Solution {
-    public boolean isSameTree(TreeNode p, TreeNode q) {
-        if(p==null && q==null)
-        	return true;
-        else if(p!=null && q!=null && p.val == q.val){
-        	boolean left = isSameTree(p.left,q.left);
-        	boolean right = isSameTree(p.right,q.right);
-
-        	if(left==true && right==true){
-        		return true;
-        	}
-        	else
-        		return false;
-
+    // second Round, more concised
+     public boolean isSameTree(TreeNode p, TreeNode q) {
+       if(q==null && p==null) return true;
+       if(p!=null && q!=null && p.val==q.val)
+        {
+            return isSameTree(p.left,q.left) && isSameTree(p.right, q.right);
         }
-        else
-        	return false;
+        return false;
     }
 }

@@ -6,45 +6,6 @@ public class Solution {
 		
 		System.out.println(test.isMatch3("aa","*"));
 	}
-	public boolean isMatch(String s, String p) {
-        if(s.equals(p)) return true;
-        if(p.length()==0) return false;
-        if(p.equals("*")) return true;
-        int i = 0;
-        int j = 0;
-        int prePosition_i=-1;
-        int prePosition_j=-1;
-        while(i<s.length()){
-            if(j<p.length() && (s.charAt(i)==p.charAt(j) || p.charAt(j)=='?')){
-                i++;
-                j++;
-            }
-           
-            else if(j<p.length() && p.charAt(j)=='*'){
-            	prePosition_i=i;
-            	prePosition_j=j;
-                j++;
-            }
-            else{
-                if(prePosition_j!=-1){
-                	i  = prePosition_i+1;
-                	j = prePosition_j;
-                	prePosition_i++;
-                }
-                else
-                	return false;
-            }
-        }
-      
-        if(i==s.length() && j!=p.length())
-        {
-        	while(j<p.length() && p.charAt(j)=='*'){
-        		j++;
-        	}
-        }
-       return j==p.length();
-      
-}
     public boolean isMatch2(String s, String p) {  
         int i = 0;  
         int j = 0;  
@@ -70,47 +31,63 @@ public class Solution {
         }  
         return j == p.length();  
     }  
-    
-    // my dp solution
-    public boolean isMatch3(String s, String p){
-        if(s.equals(p)) return true;
-        if(s.length()==0) return p.equals("*")?true:false;
-        if(p.length()==0) return false;
-        int count =0;  
-        for(int i=0;i<p.length();i++){  
-            if(p.charAt(i)!='*')  
-                count++;  //count the number of * if it is larger than length of s, then false
-        }  
-        if(count>s.length())  
-            return false;  
-    	String sn=" "+s;
-    	String pn=" "+p;
-    	boolean[][] dp=new boolean[sn.length()][pn.length()];
-    	dp[0][0]=true;//empty match empty
-    	dp[0][1]=pn.charAt(1)=='*'?true:false;//* can match empty string
-    	dp[1][0]=s.length()==0?true:false;//if s is empty, empty string can match empty    
-    	
-    	for(int i = 0;i<sn.length();i++){
-    		for(int j = 0;j<pn.length();j++){
-    			if(i>=1 && j>=1 && dp[i-1][j-1]==true){
-    				if(pn.charAt(j)=='?'|| pn.charAt(j)==sn.charAt(i)|| pn.charAt(j)=='*'){
-    					dp[i][j]=true;
-    					}
-    				}
- 
-    			else if(j>=1 && dp[i][j-1]==true && pn.charAt(j)=='*'){
-    					dp[i][j]=true;
-    				}
-    			else if(i>=1 && dp[i-1][j]==true && pn.charAt(j)=='*'){
-    				dp[i][j]=true;
-    			}
-    			else{
-    				if(i>1 || j>1)
-    					dp[i][j]=false;
-    			}
-    		}
-    	}
-    	return dp[sn.length()-1][pn.length()-1];
-    }
-    
+    // my second round DP solution , memory limit exceed, time and space O(n^2)
+    public boolean isMatch(String s, String p){
+              boolean[][] dp = new boolean[s.length()+1][p.length()+1];
+              dp[0][0]=true;
+              if(p.length()==0) return false;
+              if(p.length()>0 && p.charAt(0)=='*'){
+                  dp[0][1]=true;
+              }
+              for(int i = 0;i<s.length();i++)
+                for(int j = 0;j<p.length();j++){
+                    if(s.charAt(i)==p.charAt(j) || p.charAt(j)=='?')
+                    {
+                        dp[i+1][j+1]=dp[i][j];
+                    }
+                    else if(p.charAt(j)=='*'){
+                        dp[i+1][j+1]=dp[i][j]||dp[i+1][j]||dp[i][j+1];
+                    }
+                }
+             return dp[s.length()][p.length()];
+        }
+    // my second solution
+      public boolean isMatch(String s, String p){
+         // second method, not dp, one time solution based on observation
+         Stack<Integer> lastStar = new Stack<Integer>();
+         if(s.length()==0 && p.length()==0) return true;
+         if(p==null || p.length()==0) return false;
+
+         int pre_star = -1;
+         int pre_mark = 0;
+         int i = 0;
+         int j = 0;
+         while(i<s.length()){// only check s, p does not need to 
+             if(j<p.length() && (s.charAt(i)==p.charAt(j) || p.charAt(j)=='?')){
+                 i++;
+                 j++;
+             }
+             else if(j<p.length() && p.charAt(j)=='*'){
+                 pre_star = j;
+                 pre_mark = i;// match to i-1, next comparison i with pre_start+1
+                 j++;
+             }
+             else{
+                 if(pre_star!=-1){
+                     j = pre_star+1;
+                     i = pre_mark++;
+                 }
+                 else return false;
+             }
+         }
+        
+        while(j<p.length()){
+         if(p.charAt(j)=='*') 
+            j++;
+         else
+            break;
+        }
+
+         return j==p.length();
+      }
 }

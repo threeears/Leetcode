@@ -2,13 +2,7 @@
 
 // Note: The numbers can be arbitrarily large and are non-negative.
 public class Solution {
-	public static void main(String[] args){
-		String num1 = "9";
-		String num2 = "9";
-		Solution test = new Solution();
-		System.out.println(test.multiply(num1, num2));
-		
-	}
+  // my initial solution, did not get it in the second round
     public String multiply(String num1, String num2) {
 
     	int[] result = new int[num1.length() + num2.length()];// not num1 * num2!!
@@ -47,8 +41,28 @@ public class Solution {
        			result[position] = singleResult%10;
        			result[position+1] += flag;
        		}
+        }
        		
 
-       }
+// second round inspired by TaoGe's, O(m*n) O(n)
+        public String multiply(String num1, String num2) {
+        if(num1==null || num2==null || num1.length()==0 || num2.length()==0) return "0";
+        if(num1.equals("0") || num2.equals("0")) return "0";
+        int[] res = new int[num1.length()+num2.length()-1];
+        for(int i = 0;i<num1.length();i++)
+            for(int j = 0;j<num2.length();j++){
+                res[num1.length()-1-i+num2.length()-1-j]+=(num1.charAt(i)-'0')*(num2.charAt(j)-'0');
+            }
+        int flag=0;
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0;i<res.length;i++){
+            res[i]+=flag;
+            flag=res[i]/10;
+            res[i]=res[i]%10;
+            sb.insert(0,res[i]+"");
+        }
+        if(flag>0) sb.insert(0,flag+"");
+        return sb.toString();
+  }
 
 }

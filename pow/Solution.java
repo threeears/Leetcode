@@ -33,7 +33,7 @@ public class Solution {
     }
 
     // recurrsive O(lgn) binary, much faster!
-    public double pow2(double x, int n) {
+    public double pow(double x, int n) {
         if (n == 0) {
             return 1;
         }
@@ -57,5 +57,12 @@ public class Solution {
         } else {
             return t1*t1*t2;
         }
+    }
+    // more concised version fo divide and Conqure
+    public double pow(double x, int n) {
+        if (n==0)   return 1.0;
+        double val = pow(x, n/2);
+        if (n%2==0) return val*val;
+        return n>0 ? val*val*x : val*val/x;  // notice not 1/(val*val*x) here, understand why
     }
 }
